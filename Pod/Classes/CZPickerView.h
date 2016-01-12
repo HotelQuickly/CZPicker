@@ -33,10 +33,6 @@
 /* picker item image for each row */
 - (UIImage *)czpickerView:(CZPickerView *)pickerView imageForRow:(NSInteger)row;
 
-/* autoselect row when opening picker */
--(void)setInitialSelectedRow:(NSIndexPath*)indexPathForRow;
-
-
 @end
 
 @protocol CZPickerViewDelegate <NSObject>
