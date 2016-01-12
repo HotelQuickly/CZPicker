@@ -33,6 +33,10 @@
 /* picker item image for each row */
 - (UIImage *)czpickerView:(CZPickerView *)pickerView imageForRow:(NSInteger)row;
 
+/* autoselect row when opening picker */
+-(void)setInitialSelectedRow:(NSIndexPath*)indexPathForRow;
+
+
 @end
 
 @protocol CZPickerViewDelegate <NSObject>
@@ -79,6 +83,9 @@
 
 @property id<CZPickerViewDataSource> dataSource;
 
+/** whether to show custom accessory default NO */
+@property BOOL shouldShowCustomAccessory;
+
 /** whether to show footer (including confirm and cancel buttons), default NO */
 @property BOOL needFooterView;
 
@@ -88,6 +95,25 @@
 /** whether allow selection of multiple items/rows, default NO, if this
  property is YES, then footerView will be shown */
 @property BOOL allowMultipleSelection;
+
+/** Font to disply on the cell */
+@property (nonatomic, strong) UIFont *cellFont;
+
+/** Font to disply on the title */
+@property (nonatomic, strong) UIFont *titleFont;
+
+/** Font to disply on the button */
+@property (nonatomic, strong) UIFont *buttonFont;
+
+/** UITableviewCell accessory image */
+@property (nonatomic, strong) UIImage *customAccessoryImage;
+
+
+/** cell background color */
+@property (nonatomic, strong) UIColor *cellBackgroundColor;
+
+/** cell text color */
+@property (nonatomic, strong) UIColor *cellTextColor;
 
 /** picker header background color */
 @property (nonatomic, strong) UIColor *headerBackgroundColor;

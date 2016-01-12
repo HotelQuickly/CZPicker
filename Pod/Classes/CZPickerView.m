@@ -214,7 +214,7 @@ typedef void (^CZDismissCompletionCallback)(void);
     [cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
     [cancelButton setTitleColor: self.cancelButtonNormalColor forState:UIControlStateNormal];
     [cancelButton setTitleColor:self.cancelButtonHighlightedColor forState:UIControlStateHighlighted];
-    cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:16];
+    cancelButton.titleLabel.font = self.buttonFont;
     cancelButton.backgroundColor = self.cancelButtonBackgroundColor;
     [cancelButton addTarget:self action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:cancelButton];
@@ -223,7 +223,7 @@ typedef void (^CZDismissCompletionCallback)(void);
     [confirmButton setTitle:self.confirmButtonTitle forState:UIControlStateNormal];
     [confirmButton setTitleColor:self.confirmButtonNormalColor forState:UIControlStateNormal];
     [confirmButton setTitleColor:self.confirmButtonHighlightedColor forState:UIControlStateHighlighted];
-    confirmButton.titleLabel.font = [UIFont systemFontOfSize:16];
+    confirmButton.titleLabel.font = self.buttonFont;
     confirmButton.backgroundColor = self.confirmButtonBackgroundColor;
     [confirmButton addTarget:self action:@selector(confirmButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:confirmButton];
@@ -235,7 +235,7 @@ typedef void (^CZDismissCompletionCallback)(void);
     view.backgroundColor = self.headerBackgroundColor;
     NSDictionary *dict = @{
                            NSForegroundColorAttributeName: self.headerTitleColor,
-                           NSFontAttributeName: [UIFont systemFontOfSize:18.0]
+                           NSFontAttributeName: self.titleFont
                            };
     NSAttributedString *at = [[NSAttributedString alloc] initWithString:self.headerTitle attributes:dict];
     UILabel *label = [[UILabel alloc] initWithFrame:view.frame];
@@ -244,6 +244,14 @@ typedef void (^CZDismissCompletionCallback)(void);
     [view addSubview:label];
     label.center = view.center;
     return view;
+}
+
+-(UIView *)buildCustomAccesoryView{
+    
+    UIImageView *accessoryImageView = [[UIImageView alloc] initWithImage:self.customAccessoryImage];
+    accessoryImageView.contentMode = UIViewContentModeScaleAspectFill;
+    accessoryImageView.clipsToBounds = NO;
+    return accessoryImageView;
 }
 
 - (IBAction)cancelButtonPressed:(id)sender{
@@ -288,6 +296,16 @@ typedef void (^CZDismissCompletionCallback)(void);
     }
 }
 
+-(void)setInitialSelectedRow:(NSIndexPath*)indexPathForRow
+{
+    if(!self.selectedIndexPaths){
+        self.selectedIndexPaths = [NSMutableArray new];
+    }
+    [self.selectedIndexPaths addObject:indexPathForRow];
+    [self.tableView reloadData];
+}
+
+
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if ([self.dataSource respondsToSelector:@selector(numberOfRowsInPickerView:)]) {
@@ -305,9 +323,20 @@ typedef void (^CZDismissCompletionCallback)(void);
     cell.accessoryType = UITableViewCellAccessoryNone;
     for(NSIndexPath *ip in self.selectedIndexPaths){
         if(ip.row == indexPath.row){
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            if (self.shouldShowCustomAccessory) {
+                cell.accessoryView = [self buildCustomAccesoryView];
+            }
+            else {
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
+            
         }
     }
+    
+    cell.backgroundColor = self.cellBackgroundColor;
+    cell.textLabel.textColor = self.cellTextColor;
+    cell.textLabel.font = self.cellFont;
+    
     if([self.dataSource respondsToSelector:@selector(czpickerView:titleForRow:)] && [self.dataSource respondsToSelector:@selector(czpickerView:imageForRow:)]){
         cell.textLabel.text = [self.dataSource czpickerView:self titleForRow:indexPath.row];
         cell.imageView.image = [self.dataSource czpickerView:self imageForRow:indexPath.row];
@@ -338,7 +367,14 @@ typedef void (^CZDismissCompletionCallback)(void);
             cell.accessoryType = UITableViewCellAccessoryNone;
         } else {
             [self.selectedIndexPaths addObject:indexPath];
+            
+            if (self.shouldShowCustomAccessory) {
+                cell.accessoryView = [self buildCustomAccesoryView];
+            }
+            else {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            
+            }
         }
         
     } else { //single selection mode
@@ -347,8 +383,16 @@ typedef void (^CZDismissCompletionCallback)(void);
             NSIndexPath *prevIp = (NSIndexPath *)self.selectedIndexPaths[0];
             UITableViewCell *prevCell = [tableView cellForRowAtIndexPath:prevIp];
             if(indexPath.row != prevIp.row){ //different cell
+                
                 prevCell.accessoryType = UITableViewCellAccessoryNone;
-                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                
+                if (self.shouldShowCustomAccessory) {
+                    cell.accessoryView = [self buildCustomAccesoryView];
+                }
+                else {
+                    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                }
+                
                 [self.selectedIndexPaths removeObject:prevIp];
                 [self.selectedIndexPaths addObject:indexPath];
             } else {//same cell
@@ -357,7 +401,13 @@ typedef void (^CZDismissCompletionCallback)(void);
             }
         } else {//no selection
             [self.selectedIndexPaths addObject:indexPath];
+            
+            if (self.shouldShowCustomAccessory) {
+                cell.accessoryView = [self buildCustomAccesoryView];
+            }
+            else {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
         }
         
         if(!self.needFooterView && [self.delegate respondsToSelector:@selector(czpickerView:didConfirmWithItemAtRow:)]){
