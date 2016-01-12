@@ -169,6 +169,7 @@ typedef void (^CZDismissCompletionCallback)(void);
     tableView.delegate = self;
     tableView.dataSource = self;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    tableView.bounces = NO;
     return tableView;
 }
 
