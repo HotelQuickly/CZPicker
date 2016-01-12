@@ -297,16 +297,6 @@ typedef void (^CZDismissCompletionCallback)(void);
     }
 }
 
--(void)setInitialSelectedRow:(NSIndexPath*)indexPathForRow
-{
-    if(!self.selectedIndexPaths){
-        self.selectedIndexPaths = [NSMutableArray new];
-    }
-    [self.selectedIndexPaths addObject:indexPathForRow];
-    [self.tableView reloadData];
-}
-
-
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if ([self.dataSource respondsToSelector:@selector(numberOfRowsInPickerView:)]) {
