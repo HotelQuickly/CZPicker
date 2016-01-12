@@ -312,6 +312,7 @@ typedef void (^CZDismissCompletionCallback)(void);
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier: cellIdentifier];
     }
     cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.accessoryView = nil;
     for(NSIndexPath *ip in self.selectedIndexPaths){
         if(ip.row == indexPath.row){
             if (self.shouldShowCustomAccessory) {
@@ -355,6 +356,7 @@ typedef void (^CZDismissCompletionCallback)(void);
         
         if([self.selectedIndexPaths containsObject:indexPath]){
             [self.selectedIndexPaths removeObject:indexPath];
+            cell.accessoryView = nil;
             cell.accessoryType = UITableViewCellAccessoryNone;
         } else {
             [self.selectedIndexPaths addObject:indexPath];
@@ -376,7 +378,7 @@ typedef void (^CZDismissCompletionCallback)(void);
             if(indexPath.row != prevIp.row){ //different cell
                 
                 prevCell.accessoryType = UITableViewCellAccessoryNone;
-                
+                prevCell.accessoryType = nil;
                 if (self.shouldShowCustomAccessory) {
                     cell.accessoryView = [self buildCustomAccesoryView];
                 }
@@ -387,6 +389,7 @@ typedef void (^CZDismissCompletionCallback)(void);
                 [self.selectedIndexPaths removeObject:prevIp];
                 [self.selectedIndexPaths addObject:indexPath];
             } else {//same cell
+                cell.accessoryView = nil;
                 cell.accessoryType = UITableViewCellAccessoryNone;
                 self.selectedIndexPaths = [NSMutableArray new];
             }
