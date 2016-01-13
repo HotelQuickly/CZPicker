@@ -378,7 +378,7 @@ typedef void (^CZDismissCompletionCallback)(void);
             if(indexPath.row != prevIp.row){ //different cell
                 
                 prevCell.accessoryType = UITableViewCellAccessoryNone;
-                prevCell.accessoryType = nil;
+                prevCell.accessoryView = nil;
                 if (self.shouldShowCustomAccessory) {
                     cell.accessoryView = [self buildCustomAccesoryView];
                 }
